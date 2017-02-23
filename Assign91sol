@@ -1,0 +1,68 @@
+------------------------------------------------
+Sol 1.
+------------------------------------------------
+
+A = LOAD '/home/acadgild/pig/petrol_data.csv' using PigStorage(',') as (dis_id:chararray, dis_name:chararray, buy_rate:chararray, sell_rate:chararray, vol_in:int, vol_out:int, year:int);
+
+B = group A by dis_name;
+
+C = foreach B generate group, SUM(A.vol_out);
+
+dump C;
+
+
+------------------------------------------------
+Sol 2.
+------------------------------------------------
+
+b = foreach A generate dis_id, dis_name, REPLACE(buy_rate,'\\\$','') as buy_raten, REPLACE(sell_rate,'\\\$','') as sell_raten, vol_in, vol_out, year;
+
+c = foreach b generate dis_id, dis_name, (float)buy_raten, (float)sell_raten, vol_in, vol_out, year;
+
+d = order c by sell_raten desc;
+
+e = LIMIT d 10;
+
+f = foreach e generate dis_id, vol_out;
+
+dump f;
+
+
+
+
+------------------------------------------------
+Sol 3.
+------------------------------------------------
+
+g = order c by vol_out desc;
+
+h = limit g 10;
+
+i = foreach h generate dis_id, vol_out, year;
+
+dump i;
+
+
+
+
+
+
+------------------------------------------------
+Sol 4.
+------------------------------------------------
+
+j = order c by sell_raten;
+
+k = limit j 1;
+
+l = foreach k generate dis_name;
+
+dump l;
+
+
+
+
+
+
+
+
